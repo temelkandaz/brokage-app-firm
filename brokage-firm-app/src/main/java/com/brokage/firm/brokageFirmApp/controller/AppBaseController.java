@@ -1,4 +1,4 @@
-package com.brokage.firm.brokage_firm_app.controller;
+package com.brokage.firm.brokageFirmApp.controller;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.ResponseEntity;

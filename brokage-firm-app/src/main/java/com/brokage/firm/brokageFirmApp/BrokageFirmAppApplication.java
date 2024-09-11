@@ -1,4 +1,4 @@
-package com.brokage.firm.brokage_firm_app;
+package com.brokage.firm.brokageFirmApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
