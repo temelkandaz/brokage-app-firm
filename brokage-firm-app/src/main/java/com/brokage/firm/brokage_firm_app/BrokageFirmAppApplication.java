@@ -9,5 +9,4 @@ public class BrokageFirmAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BrokageFirmAppApplication.class, args);
 	}
-
 }
