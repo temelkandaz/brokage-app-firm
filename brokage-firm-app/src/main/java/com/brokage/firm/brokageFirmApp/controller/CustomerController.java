@@ -2,6 +2,7 @@ package com.brokage.firm.brokageFirmApp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,7 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PutMapping("/{customerId}/deposit")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Boolean> depositMoney (
         @PathVariable("customerId") Long customerId,
         @RequestBody DepositMoneyDto depositMoneyDto
@@ -37,6 +39,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}/withdraw")
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Boolean> withdrawMoney (
         @PathVariable("customerId") Long customerId,
         @RequestBody WithdrawMoneyDto withdrawMoneyDto
