@@ -1,5 +1,8 @@
 package com.brokage.firm.brokageFirmApp.service;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +46,11 @@ public class OrderService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    public List<Order> getOrdersByCustomerIdAndDateRange(
+        long customerId, Timestamp fromDate, Timestamp toDate
+    ) {
+        return orderRepository.findByCustomerIdAndCreatedAtBetween(customerId, fromDate, toDate);
     }
 }

@@ -20,7 +20,7 @@ public class AssetController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Asset>> getAllAssets() {
-        List<Asset> assets = this.assetService.getAllAssets();
+        List<Asset> assets = assetService.getAllAssets();
 
         return ResponseEntity.ok(assets);
     }
