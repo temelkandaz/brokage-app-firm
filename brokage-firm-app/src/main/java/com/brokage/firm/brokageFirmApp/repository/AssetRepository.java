@@ -10,4 +10,6 @@ import com.brokage.firm.brokageFirmApp.entity.Asset;
 @Repository
 public interface AssetRepository extends CrudRepository<Asset, Long> {
     List<Asset> findAll(); 
+
+    Asset findById(long id);
 }

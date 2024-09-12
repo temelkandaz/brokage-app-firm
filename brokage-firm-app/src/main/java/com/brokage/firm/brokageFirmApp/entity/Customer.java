@@ -1,7 +1,6 @@
 package com.brokage.firm.brokageFirmApp.entity;
 
 import java.sql.Timestamp;
-import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -11,8 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -40,11 +37,15 @@ public class Customer {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @OneToMany
-    @JoinColumn(name = "asset_id")
-    private Set<Asset> assets;
-
     // Getter
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
 
     public int getBalance() {
         return balance;

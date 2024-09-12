@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,15 +13,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name="asset")
-public class Asset {
+@Setter
+@Table(name="orders")
+public class Order {
     
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -29,15 +33,23 @@ public class Asset {
     @Column(name="asset_name", length=25, nullable=false)
     private String assetName;
 
-    @Column(name="currency", nullable=false)
+    @Column(name="order_side", nullable=false)
     @Enumerated(EnumType.ORDINAL)
-    private Currency currency;
+    private OrderSide orderSide;
 
     @Column(name="size", nullable=false)
     private int size;
 
-    @Column(name="usable_size", nullable=false)
-    private int usableSize;
+    @Column(name="price", nullable=false)
+    private int price;
+
+    @Column(name="currency", nullable=false)
+    @Enumerated(EnumType.ORDINAL)
+    private Currency currency;
+
+    @Column(name="order_status", nullable=false)
+    @Enumerated(EnumType.ORDINAL)
+    private OrderStatus orderStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -50,6 +62,7 @@ public class Asset {
     @ManyToOne
     private Customer customer;
 
-    @OneToOne(mappedBy = "asset")
-    private Order order;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "asset_id", referencedColumnName = "id")
+    private Asset asset;
 }
