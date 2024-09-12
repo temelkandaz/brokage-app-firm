@@ -1,6 +1,7 @@
 package com.brokage.firm.brokageFirmApp.entity;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,7 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
@@ -52,7 +53,7 @@ public class Asset {
     @ManyToOne
     private Customer customer;
 
-    @OneToOne(mappedBy = "asset")
+    @OneToMany
     @JsonBackReference
-    private Order order;
+    private Set<Order> order;
 }
