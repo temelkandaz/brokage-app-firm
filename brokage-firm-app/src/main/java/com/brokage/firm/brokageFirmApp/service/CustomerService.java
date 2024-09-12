@@ -19,9 +19,22 @@ public class CustomerService {
     public void depositMoneyForCustomer(Long customerId, int depositAmount) {
         Customer customer = this.getCustomerById(customerId);
 
-        int newBalanceAmount = customer.getBalance() + depositAmount;
+        int finalBalance = customer.getBalance() + depositAmount;
 
-        customer.setBalance(newBalanceAmount);
+        customer.setBalance(finalBalance);
+
+        customerRepository.save(customer);
+    }
+
+    public void withdrawMoneyForCustomer(Long customerId, int withdrawAmount, String IBAN) {
+        Customer customer = this.getCustomerById(customerId);
+
+        // send money to IBAN 
+
+        // if succesfull
+        int finalBalance = customer.getBalance() - withdrawAmount;
+
+        customer.setBalance(finalBalance);
 
         customerRepository.save(customer);
     }

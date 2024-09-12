@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brokage.firm.brokageFirmApp.dto.DepositMoneyDto;
+import com.brokage.firm.brokageFirmApp.dto.WithdrawMoneyDto;
 import com.brokage.firm.brokageFirmApp.entity.Customer;
 import com.brokage.firm.brokageFirmApp.service.CustomerService;
 
@@ -31,6 +32,28 @@ public class CustomerController {
         }
 
         customerService.depositMoneyForCustomer(customerId, depositMoneyDto.getAmount());
+
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("/{customerId}/withdraw")
+    public ResponseEntity<Boolean> withdrawMoney (
+        @PathVariable("customerId") Long customerId,
+        @RequestBody WithdrawMoneyDto withdrawMoneyDto
+    ) {
+        Customer customer = customerService.getCustomerById(customerId);
+
+        if (customer == null) {
+            return ResponseEntity.ok(false);
+        }
+
+        if (customer.getBalance() < withdrawMoneyDto.getAmount()) {
+            return ResponseEntity.ok(false);
+        }
+
+        customerService.withdrawMoneyForCustomer(
+            customerId, withdrawMoneyDto.getAmount(), withdrawMoneyDto.getIBAN()
+        );
 
         return ResponseEntity.ok(true);
     }
