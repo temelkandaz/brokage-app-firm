@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import com.brokage.firm.brokageFirmApp.dto.CreateOrderDto;
 import com.brokage.firm.brokageFirmApp.entity.Asset;
 import com.brokage.firm.brokageFirmApp.entity.Customer;
 import com.brokage.firm.brokageFirmApp.entity.Order;
+import com.brokage.firm.brokageFirmApp.entity.OrderStatus;
 import com.brokage.firm.brokageFirmApp.service.AssetService;
 import com.brokage.firm.brokageFirmApp.service.CustomerService;
 import com.brokage.firm.brokageFirmApp.service.OrderService;
@@ -54,6 +56,23 @@ public class OrderController {
         }
 
         Order order = orderService.create(createOrderDto);
+
+        return ResponseEntity.ok(order);
+    }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<Order> cancel(@PathVariable("orderId") Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+
+        if (order == null) {
+            return ResponseEntity.ok(new Order());
+        }
+
+        if (order.getOrderStatus() != OrderStatus.PENDING) {
+            return ResponseEntity.ok(new Order());
+        }
+
+        order = orderService.cancelPendingOrder(orderId);
 
         return ResponseEntity.ok(order);
     }

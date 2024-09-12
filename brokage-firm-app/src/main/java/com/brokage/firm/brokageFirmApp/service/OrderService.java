@@ -48,9 +48,23 @@ public class OrderService {
         return order;
     }
 
+    public Order getOrderById(long orderId) {
+        return orderRepository.findById(orderId);
+    }
+
     public List<Order> getOrdersByCustomerIdAndDateRange(
         long customerId, Timestamp fromDate, Timestamp toDate
     ) {
         return orderRepository.findByCustomerIdAndCreatedAtBetween(customerId, fromDate, toDate);
+    }
+
+    public Order cancelPendingOrder(long orderId) {
+        Order order = orderRepository.findById(orderId);
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+
+        orderRepository.save(order);
+
+        return order;
     }
 }
