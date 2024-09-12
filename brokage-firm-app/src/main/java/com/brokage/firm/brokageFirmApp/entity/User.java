@@ -24,7 +24,7 @@ import jakarta.persistence.Table;
 public class User implements UserDetails{
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="username", length=25, nullable=false, unique=true)

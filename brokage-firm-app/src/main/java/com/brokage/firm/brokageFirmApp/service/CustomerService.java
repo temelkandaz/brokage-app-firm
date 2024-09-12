@@ -31,7 +31,6 @@ public class CustomerService {
 
         // send money to IBAN 
 
-        // if succesfull
         int finalBalance = customer.getBalance() - withdrawAmount;
 
         customer.setBalance(finalBalance);

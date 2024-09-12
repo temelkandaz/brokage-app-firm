@@ -45,6 +45,56 @@ public class GlobalExceptionHandler {
             errorDetail.setProperty("description", "The JWT token has expired");
         }
 
+        if(exception instanceof CustomerNotFoundException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
+            errorDetail.setProperty("description", "The customer id provided is not found in the system.");
+        }
+
+        if(exception instanceof AssetNotFoundException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(404), exception.getMessage());
+            errorDetail.setProperty("description", "The asset id provided is not found in the system.");
+        }
+
+        if(exception instanceof OrderNotFoundException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "The order id provided is not found in the system.");
+        }
+
+        if(exception instanceof NotSufficientBalanceToWithdraw) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Customer doesn't have enough amount of balance to withdraw the requested amount.");
+        }
+
+        if(exception instanceof CantBuyOwnAssetsException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Customer can't place an order against own assets.");
+        }
+
+        if(exception instanceof NotEnoughUsableSizeToBuyException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Asset doesn't have enough usable size to match the order size.");
+        }
+
+        if(exception instanceof NotHaveSufficientBalanceToProvideOrderPriceException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Customer doesn't have sufficient amount of balance to provide the order price.");
+        }
+
+        if(exception instanceof CanOnlySellOwnAssetsException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Customer can only sell own assets.");
+        }
+
+        if(exception instanceof NotEnoughUsableSizeToSellException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Asset doesn't have enough usable size to match the order size.");
+        }
+
+        if(exception instanceof OrderNotInPendingStatusException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
+            errorDetail.setProperty("description", "Order is not in PENDING status.");
+        }
+
         if (errorDetail == null) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
             errorDetail.setProperty("description", "Unknown internal server error.");

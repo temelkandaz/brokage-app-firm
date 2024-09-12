@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.brokage.firm.brokageFirmApp.dto.DepositMoneyDto;
 import com.brokage.firm.brokageFirmApp.dto.WithdrawMoneyDto;
-import com.brokage.firm.brokageFirmApp.entity.Customer;
+import com.brokage.firm.brokageFirmApp.exception.CustomerNotFoundException;
+import com.brokage.firm.brokageFirmApp.exception.NotSufficientBalanceToWithdraw;
 import com.brokage.firm.brokageFirmApp.service.CustomerService;
+import com.brokage.firm.brokageFirmApp.service.ValidationService;
 
 @RequestMapping("/customer")
 @RestController
@@ -21,17 +23,17 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private ValidationService validationService;
+
     @PutMapping("/{customerId}/deposit")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public ResponseEntity<Boolean> depositMoney (
         @PathVariable("customerId") Long customerId,
         @RequestBody DepositMoneyDto depositMoneyDto
-    ) {
-        Customer customer = customerService.getCustomerById(customerId);
+    ) throws CustomerNotFoundException {
 
-        if (customer == null) {
-            return ResponseEntity.ok(false);
-        }
+        validationService.validateDepositMoneyRequest(customerId);
 
         customerService.depositMoneyForCustomer(customerId, depositMoneyDto.getAmount());
 
@@ -43,16 +45,9 @@ public class CustomerController {
     public ResponseEntity<Boolean> withdrawMoney (
         @PathVariable("customerId") Long customerId,
         @RequestBody WithdrawMoneyDto withdrawMoneyDto
-    ) {
-        Customer customer = customerService.getCustomerById(customerId);
+    ) throws CustomerNotFoundException, NotSufficientBalanceToWithdraw {
 
-        if (customer == null) {
-            return ResponseEntity.ok(false);
-        }
-
-        if (customer.getBalance() < withdrawMoneyDto.getAmount()) {
-            return ResponseEntity.ok(false);
-        }
+        validationService.validateWithdrawMoneyRequest(customerId, withdrawMoneyDto.getAmount());
 
         customerService.withdrawMoneyForCustomer(
             customerId, withdrawMoneyDto.getAmount(), withdrawMoneyDto.getIBAN()

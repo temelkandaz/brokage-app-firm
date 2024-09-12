@@ -17,14 +17,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brokage.firm.brokageFirmApp.dto.CreateOrderDto;
-import com.brokage.firm.brokageFirmApp.entity.Asset;
-import com.brokage.firm.brokageFirmApp.entity.Customer;
 import com.brokage.firm.brokageFirmApp.entity.Order;
-import com.brokage.firm.brokageFirmApp.entity.OrderStatus;
-import com.brokage.firm.brokageFirmApp.service.AssetService;
-import com.brokage.firm.brokageFirmApp.service.CustomerService;
+import com.brokage.firm.brokageFirmApp.exception.AssetNotFoundException;
+import com.brokage.firm.brokageFirmApp.exception.CanOnlySellOwnAssetsException;
+import com.brokage.firm.brokageFirmApp.exception.CantBuyOwnAssetsException;
+import com.brokage.firm.brokageFirmApp.exception.CustomerNotFoundException;
+import com.brokage.firm.brokageFirmApp.exception.NotEnoughUsableSizeToBuyException;
+import com.brokage.firm.brokageFirmApp.exception.NotEnoughUsableSizeToSellException;
+import com.brokage.firm.brokageFirmApp.exception.NotHaveSufficientBalanceToProvideOrderPriceException;
+import com.brokage.firm.brokageFirmApp.exception.OrderNotFoundException;
+import com.brokage.firm.brokageFirmApp.exception.OrderNotInPendingStatusException;
 import com.brokage.firm.brokageFirmApp.service.OrderService;
 import com.brokage.firm.brokageFirmApp.service.TimeService;
+import com.brokage.firm.brokageFirmApp.service.ValidationService;
 
 @RequestMapping("/order")
 @RestController
@@ -34,28 +39,18 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    private AssetService assetService;
-
-    @Autowired
-    private CustomerService customerService;
+    private ValidationService validationService;
 
     @Autowired
     private TimeService timeService;
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<Order> create(@RequestBody CreateOrderDto createOrderDto) {
-        Asset asset = assetService.getAssetById(createOrderDto.getAssetId());
+    public ResponseEntity<Order> create(
+        @RequestBody CreateOrderDto createOrderDto
+    ) throws CustomerNotFoundException, AssetNotFoundException, CantBuyOwnAssetsException, CanOnlySellOwnAssetsException, NotEnoughUsableSizeToBuyException, NotEnoughUsableSizeToSellException, NotHaveSufficientBalanceToProvideOrderPriceException {
 
-        if (asset == null) {
-            return ResponseEntity.ok(new Order());
-        }
-
-        Customer customer = customerService.getCustomerById(createOrderDto.getCustomerId());
-
-        if (customer == null) {
-            return ResponseEntity.ok(new Order());
-        }
+        validationService.validateCreateOrderRequest(createOrderDto);
 
         Order order = orderService.create(createOrderDto);
 
@@ -64,18 +59,12 @@ public class OrderController {
 
     @PutMapping("/{orderId}/cancel")
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
-    public ResponseEntity<Order> cancel(@PathVariable("orderId") Long orderId) {
-        Order order = orderService.getOrderById(orderId);
+    public ResponseEntity<Order> cancel(@PathVariable("orderId") Long orderId) 
+        throws OrderNotFoundException, OrderNotInPendingStatusException {
 
-        if (order == null) {
-            return ResponseEntity.ok(new Order());
-        }
+        validationService.validateCancelOrderRequest(orderId);
 
-        if (order.getOrderStatus() != OrderStatus.PENDING) {
-            return ResponseEntity.ok(new Order());
-        }
-
-        order = orderService.cancelPendingOrder(orderId);
+        Order order = orderService.cancelPendingOrder(orderId);
 
         return ResponseEntity.ok(order);
     }
