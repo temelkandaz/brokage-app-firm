@@ -1,5 +1,6 @@
 package com.brokage.firm.brokageFirmApp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +11,11 @@ import com.brokage.firm.brokageFirmApp.repository.UserRepository;
 @Service
 public class RegistrationService {
     
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public RegistrationService(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User register(RegisterUserDto registerUserInput) {
         String encodedPassword = passwordEncoder.encode(registerUserInput.getPassword());

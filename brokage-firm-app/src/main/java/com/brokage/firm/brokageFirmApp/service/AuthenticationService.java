@@ -1,8 +1,8 @@
 package com.brokage.firm.brokageFirmApp.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.brokage.firm.brokageFirmApp.dto.LoginUserDto;
@@ -12,18 +12,19 @@ import com.brokage.firm.brokageFirmApp.repository.UserRepository;
 @Service
 public class AuthenticationService {
     
-    private final UserRepository userRepository;
-    
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
 
-    public AuthenticationService(
-        UserRepository userRepository,
-        AuthenticationManager authenticationManager,
-        PasswordEncoder passwordEncoder
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    // public AuthenticationService(
+    //     UserRepository userRepository,
+    //     AuthenticationManager authenticationManager
+    // ) {
+    //     this.authenticationManager = authenticationManager;
+    //     this.userRepository = userRepository;
+    // }
 
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
