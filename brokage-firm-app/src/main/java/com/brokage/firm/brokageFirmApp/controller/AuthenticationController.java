@@ -1,5 +1,6 @@
 package com.brokage.firm.brokageFirmApp.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import com.brokage.firm.brokageFirmApp.dto.LoginUserDto;
 import com.brokage.firm.brokageFirmApp.dto.RegisterUserDto;
 import com.brokage.firm.brokageFirmApp.entity.User;
 import com.brokage.firm.brokageFirmApp.response.LoginResponse;
+import com.brokage.firm.brokageFirmApp.response.RegisterResponse;
 import com.brokage.firm.brokageFirmApp.service.AuthenticationService;
 import com.brokage.firm.brokageFirmApp.service.JwtService;
 import com.brokage.firm.brokageFirmApp.service.RegistrationService;
@@ -19,28 +21,23 @@ import com.brokage.firm.brokageFirmApp.service.RegistrationService;
 @RestController
 public class AuthenticationController {
     
-    private final JwtService jwtService;
+    @Autowired
+    private JwtService jwtService;
     
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
-    private final RegistrationService registrationService;
-
-    public AuthenticationController(
-        JwtService jwtService, 
-        AuthenticationService authenticationService,
-        RegistrationService registrationService
-    ) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-        this.registrationService = registrationService;
-    }
+    @Autowired
+    private RegistrationService registrationService;
 
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterUserDto registerUserDto) {
         User registeredUser = registrationService.register(registerUserDto);
 
-        return ResponseEntity.ok(registeredUser);
+        RegisterResponse registerResponse = (new RegisterResponse()).toRegisterResponse(registeredUser);
+
+        return ResponseEntity.ok(registerResponse);
     }
 
     @PostMapping("/login")

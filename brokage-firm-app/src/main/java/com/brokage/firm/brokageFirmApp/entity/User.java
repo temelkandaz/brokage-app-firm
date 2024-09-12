@@ -66,6 +66,10 @@ public class User implements UserDetails{
         return role;
     }
 
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
     // Setters
 
     public void setUsername(String username) {

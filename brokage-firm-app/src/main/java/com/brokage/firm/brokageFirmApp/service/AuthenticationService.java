@@ -18,14 +18,6 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // public AuthenticationService(
-    //     UserRepository userRepository,
-    //     AuthenticationManager authenticationManager
-    // ) {
-    //     this.authenticationManager = authenticationManager;
-    //     this.userRepository = userRepository;
-    // }
-
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
